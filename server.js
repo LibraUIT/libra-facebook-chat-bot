@@ -14,6 +14,10 @@ app.use(bodyParser.urlencoded({
 }));
 var server = http.createServer(app);
 var request = require("request");
+var Simsimi = require('simsimi');
+var simsimi = new Simsimi({
+  key: '73538c89-b968-43bc-99c4-c74e24d08891'
+});
 
 app.get('/', (req, res) => {
   res.send("Home page. Server running okay.");
@@ -46,8 +50,17 @@ app.post('/webhook', function(req, res) {
             out = 'Goodbye ! See you again !';
           } else if (text == 'g9' || text == 'G9' || text == 'ngu ngon') {
             out = 'Good night';
+          } else if (text == "You're beautiful" ) {
+            out = 'I think so :)';
+          } else if (text == 'Do you remember me') {
+            out = 'Yes . I miss you so much !';
           }
-          sendMessage(senderId, out);
+          //sendMessage(senderId, out);
+          simsimi.listen('*', function(err, msg){
+              if(err) return console.error(err);
+              sendMessage(senderId, msg);
+          });
+
         }
       }
     }
