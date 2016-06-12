@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({
 var server = http.createServer(app);
 var request = require("request");
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   res.send("Home page. Server running okay.");
 });
 
@@ -38,7 +38,16 @@ app.post('/webhook', function(req, res) {
         // If user send text
         if (message.message.text) {
           var text = message.message.text;
-          sendMessage(senderId, "GirlxinhVD.Com Xin Chào Bạn");
+          console.log(text); // In tin nhắn người dùng
+          var out = 'Welcome to GirlxinhVD.Com';
+          if (text == 'Hello' || text == 'hello' || text == 'hi' || text == 'xin chao') {
+            out = 'Hi you ! How are you to day ?';
+          } else if (text == 'Bye' || text == 'bye' || text == 'tam biet') {
+            out = 'Goodbye ! See you again !';
+          } else if (text == 'g9' || text == 'G9' || text == 'ngu ngon') {
+            out = 'Good night';
+          }
+          sendMessage(senderId, out);
         }
       }
     }
