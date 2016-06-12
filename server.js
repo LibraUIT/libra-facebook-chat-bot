@@ -39,7 +39,15 @@ app.post('/webhook', function(req, res) {
         if (message.message.text) {
           var text = message.message.text;
           console.log(text); // In tin nhắn người dùng
-          sendMessage(senderId, "Tui là bot đây: " + text);
+          var out = 'Welcome to GirlxinhVD.Com';
+          if (text == 'Hello' || text == 'hello' || text == 'hi' || text == 'xin chao') {
+            out = 'Hi you ! How are you to day ?';
+          } else if (text == 'Bye' || text == 'bye' || text == 'tam biet') {
+            out = 'Goodbye ! See you again !';
+          } else if (text == 'g9' || text == 'G9' || text == 'ngu ngon') {
+            out = 'Good night';
+          }
+          sendMessage(senderId, out);
         }
       }
     }
