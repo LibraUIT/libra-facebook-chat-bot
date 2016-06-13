@@ -14,10 +14,12 @@ app.use(bodyParser.urlencoded({
 }));
 var server = http.createServer(app);
 var request = require("request");
-var Simsimi = require('simsimi');
-var simsimi = new Simsimi({
-  key: '73538c89-b968-43bc-99c4-c74e24d08891'
+var firebase = require('firebase');
+var myApp = firebase.initializeApp({
+  serviceAccount: 'facebook-chat-bot-af57037b6ad9.json',
+  databaseURL: "https://facebook-chat-bot-57099.firebaseio.com/"
 });
+var database = myApp.database();
 
 app.get('/', (req, res) => {
   res.send("Home page. Server running okay.");
@@ -30,7 +32,6 @@ app.get('/webhook', function(req, res) {
   }
   res.send('Error, wrong validation token');
 });
-
 // Xử lý khi có người nhắn tin cho bot
 app.post('/webhook', function(req, res) {
   var entries = req.body.entry;
@@ -42,25 +43,18 @@ app.post('/webhook', function(req, res) {
         // If user send text
         if (message.message.text) {
           var text = message.message.text;
-          console.log(text); // In tin nhắn người dùng
-          var out = 'Welcome to GirlxinhVD.Com';
-          if (text == 'Hello' || text == 'hello' || text == 'hi' || text == 'xin chao') {
-            out = 'Hi you ! How are you to day ?';
-          } else if (text == 'Bye' || text == 'bye' || text == 'tam biet') {
-            out = 'Goodbye ! See you again !';
-          } else if (text == 'g9' || text == 'G9' || text == 'ngu ngon') {
-            out = 'Good night';
-          } else if (text == "You're beautiful" ) {
-            out = 'I think so :)';
-          } else if (text == 'Do you remember me') {
-            out = 'Yes . I miss you so much !';
+          try {
+            database.ref(text.toLowerCase()).once('value').then(function(snapshot) {
+              console.log(snapshot.val());
+              if (snapshot.val() !== null) {
+                sendMessage(senderId, snapshot.val());
+              } else {
+                sendMessage(senderId, 'I don\'t know :(');
+              }
+            });
+          } catch(err) {
+            sendMessage(senderId, 'I don\'t know :(');
           }
-          //sendMessage(senderId, out);
-          simsimi.listen('*', function(err, msg){
-              if(err) return console.error(err);
-              sendMessage(senderId, msg);
-          });
-
         }
       }
     }
