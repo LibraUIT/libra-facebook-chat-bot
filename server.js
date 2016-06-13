@@ -14,6 +14,13 @@ app.use(bodyParser.urlencoded({
 }));
 var server = http.createServer(app);
 var request = require("request");
+var firebase = require('firebase');
+var Firebase = require('./constants/firebase');
+var myApp = firebase.initializeApp({
+  serviceAccount: Firebase.SERVICE_ACCOUNT,
+  databaseURL: Firebase.BASE_URL
+});
+var database = myApp.database();
 
 app.get('/', (req, res) => {
   res.send("Home page. Server running okay.");
@@ -26,7 +33,6 @@ app.get('/webhook', function(req, res) {
   }
   res.send('Error, wrong validation token');
 });
-
 // Xử lý khi có người nhắn tin cho bot
 app.post('/webhook', function(req, res) {
   var entries = req.body.entry;
@@ -46,8 +52,24 @@ app.post('/webhook', function(req, res) {
             out = 'Goodbye ! See you again !';
           } else if (text == 'g9' || text == 'G9' || text == 'ngu ngon') {
             out = 'Good night';
+          } else if (text == "You're beautiful" ) {
+            out = 'I think so :)';
+          } else if (text == 'Do you remember me') {
+            out = 'Yes . I miss you so much !';
           }
-          sendMessage(senderId, out);
+          //sendMessage(senderId, out);
+          try {
+            database.ref(text.toLowerCase()).once('value').then(function(snapshot) {
+              console.log(snapshot.val());
+              if (snapshot.val() !== null) {
+                sendMessage(senderId, snapshot.val());
+              } else {
+                sendMessage(senderId, 'I don\'t know :(');
+              }
+            });
+          } catch(err) {
+            sendMessage(senderId, 'I don\'t know :(');
+          }
         }
       }
     }

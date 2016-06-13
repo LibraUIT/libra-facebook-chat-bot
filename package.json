@@ -11,8 +11,9 @@
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "~3.2.4",
+    "firebase": "^3.0.4",
     "morgan": "^1.7.0",
     "request": "^2.72.0",
-    "witbot": "^2.1.0"
+    "simsimi": "^2.0.0"
   }
 }
