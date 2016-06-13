@@ -44,20 +44,6 @@ app.post('/webhook', function(req, res) {
         // If user send text
         if (message.message.text) {
           var text = message.message.text;
-          console.log(text); // In tin nhắn người dùng
-          var out = 'Welcome to GirlxinhVD.Com';
-          if (text == 'Hello' || text == 'hello' || text == 'hi' || text == 'xin chao') {
-            out = 'Hi you ! How are you to day ?';
-          } else if (text == 'Bye' || text == 'bye' || text == 'tam biet') {
-            out = 'Goodbye ! See you again !';
-          } else if (text == 'g9' || text == 'G9' || text == 'ngu ngon') {
-            out = 'Good night';
-          } else if (text == "You're beautiful" ) {
-            out = 'I think so :)';
-          } else if (text == 'Do you remember me') {
-            out = 'Yes . I miss you so much !';
-          }
-          //sendMessage(senderId, out);
           try {
             database.ref(text.toLowerCase()).once('value').then(function(snapshot) {
               console.log(snapshot.val());
